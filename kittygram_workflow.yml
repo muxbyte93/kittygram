@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'infra/**'                
-      - '.github/workflows/terraform.yml'   
 
 jobs:
   lint:
@@ -74,6 +71,7 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+ 
       - name: Debug SSH connection manually
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -90,7 +88,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           source: "docker-compose.production.yml"
           target: "~/kittygram/"
-          debug: true
 
       - name: Executing remote SSH commands to deploy
         uses: appleboy/ssh-action@master
@@ -98,7 +95,6 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          debug: true
           script: |
             cd ~/kittygram/
             sudo docker-compose -f docker-compose.production.yml pull &&
