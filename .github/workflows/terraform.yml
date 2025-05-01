@@ -35,8 +35,7 @@ jobs:
 
       - name: Configure Yandex Cloud credentials
         run: |
-          echo "${{ secrets.YC_KEY_B64 }}" | base64 -d > authorized_key.json        
-
+          printf '%s' "${{ secrets.YC_KEY_B64 }}" | base64 -d > authorized_key.json
       - name: Terraform Init (Backend)
         run: terraform -chdir=infra init -upgrade
 
