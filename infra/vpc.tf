@@ -21,9 +21,9 @@ resource "yandex_vpc_security_group" "sg" {
     v4_cidr_blocks = ["0.0.0.0/0"]
     description    = "Allow SSH from anywhere"
   }
-  ingress {                      # Правило для веб-приложения (порт 9000)
+  ingress {                      # Правило для веб-приложения (порт 80)
     protocol       = "TCP"
-    port           = 9000
+    port           = 80
     v4_cidr_blocks = ["0.0.0.0/0"]
     description    = "Allow HTTP from anywhere"
   }
