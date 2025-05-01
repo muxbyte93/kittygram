@@ -39,6 +39,6 @@ resource "yandex_compute_instance" "vm" {
 }
 
 resource "yandex_storage_bucket" "tf_state" {
-  bucket = "kittygram-terraform-state-muxbyte93"
+  bucket = "kittygram-terraform-state-muxbyte"
   acl    = "private"
 }

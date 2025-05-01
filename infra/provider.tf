@@ -9,7 +9,7 @@ terraform {
     endpoints = { 
       s3 = "https://storage.yandexcloud.net" 
     }
-    bucket = "kittygram-terraform-state-muxbyte93"
+    bucket = "kittygram-terraform-state-muxbyte"
     key    = "global/terraform.tfstate"
     region = "ru-central1"
 
