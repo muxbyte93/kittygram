@@ -37,8 +37,3 @@ resource "yandex_compute_instance" "vm" {
     ssh-keys  = "ubuntu:${var.vm_ssh_pubkey}"
   }
 }
-
-resource "yandex_storage_bucket" "tf_state" {
-  bucket = "kittygram-terraform-state-muxbyte93"
-  acl    = "private"
-}
