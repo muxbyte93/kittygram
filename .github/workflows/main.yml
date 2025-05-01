@@ -90,9 +90,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: |
-            docker-compose.production.yml
-            .env
+          source: "docker-compose.production.yml,.env"
           target: "~/kittygram/"
 
       - name: Executing remote SSH commands to deploy
