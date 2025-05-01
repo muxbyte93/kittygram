@@ -1,0 +1,52 @@
+name: Terraform Infra CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform Action (plan/apply/destroy)"
+        required: true
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+        default: plan
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID:     ${{ secrets.S3_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+      AWS_DEFAULT_REGION:    "ru-central1"
+      TF_VAR_yc_cloud_id:    ${{ secrets.YC_CLOUD_ID }}
+      TF_VAR_yc_folder_id:   ${{ secrets.YC_FOLDER_ID }}
+      TF_VAR_vm_ssh_pubkey:  ${{ secrets.VM_SSH_PUBKEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
+
+      - name: Configure Yandex Cloud credentials
+        run: echo "${{ secrets.YC_KEY_JSON }}" > authorized_key.json
+
+      - name: Terraform Init (Backend)
+        run: terraform -chdir=infra init -upgrade
+
+      - name: Terraform Plan
+        if: ${{ github.event.inputs.action == 'plan' }}
+        run: terraform -chdir=infra plan
+
+      - name: Terraform Apply
+        if: ${{ github.event.inputs.action == 'apply' }}
+        run: terraform -chdir=infra apply -auto-approve
+
+      - name: Terraform Destroy
+        if: ${{ github.event.inputs.action == 'destroy' }}
+        run: terraform -chdir=infra destroy -auto-approve
