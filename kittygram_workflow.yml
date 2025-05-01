@@ -74,6 +74,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+      - name: Debug SSH connection manually
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" > id_rsa
+          chmod 600 id_rsa
+          ssh -o StrictHostKeyChecking=no -i id_rsa ubuntu@${{ secrets.HOST }} echo "✅ SSH OK"
 
       - name: Copy docker-compose.production.yml via SSH
         uses: appleboy/scp-action@master
@@ -84,6 +91,7 @@ jobs:
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "~/kittygram/"
+          debug: true
 
       - name: Executing remote SSH commands to deploy
         uses: appleboy/ssh-action@master
@@ -92,6 +100,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
+          debug: true
           script: |
             cd ~/kittygram/
             sudo docker compose -f docker-compose.production.yml pull
